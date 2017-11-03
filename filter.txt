@@ -1,0 +1,22 @@
+# Formate Date
+# This function takes value via Pipe (|) operator
+ def format_date(x): 
+    x |strptime("%Y-%m-%d") | mktime | strftime("%a - %d, %B");
+
+def print_location:
+    . | "
+     Location: \(.title) 
+     Coordinates : \(.latt_long)   ";
+
+def print_data:
+    . | "
+    ------------------------------------------------
+    | \(format_date(.applicable_date))\t\t           |
+    | Humidity : .\(.humidity)\t\t                   |
+    | Weather State: \(.weather_state_name)\t\t\t   |
+    ------------------------------------------------";
+
+def process_weather_data:
+    . | sort_by(.applicable_date)[] | print_data;
+
+. as $root | print_location, (.consolidated_weather | process_weather_data)
